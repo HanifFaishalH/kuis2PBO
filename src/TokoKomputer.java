@@ -8,13 +8,14 @@
  * @author HANIF FAISHAL HILMI
  */
 public class TokoKomputer extends javax.swing.JFrame {
-
     /**
      * Creates new form TokoKomputer
      */
     public TokoKomputer() {
         initComponents();
     }
+    
+  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -32,6 +33,7 @@ public class TokoKomputer extends javax.swing.JFrame {
         jTable3 = new javax.swing.JTable();
         jTextField3 = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
+        ButtonItem = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tabel = new javax.swing.JTable();
@@ -80,6 +82,13 @@ public class TokoKomputer extends javax.swing.JFrame {
 
         jLabel8.setText("Cari Barang");
 
+        ButtonItem.setText("Tambah");
+        ButtonItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonItemActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -89,7 +98,9 @@ public class TokoKomputer extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(397, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(ButtonItem)
+                        .addContainerGap(306, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
@@ -107,9 +118,14 @@ public class TokoKomputer extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(187, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(ButtonItem)))
+                .addContainerGap(193, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Barang", jPanel1);
@@ -307,6 +323,46 @@ public class TokoKomputer extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
 
+    private void ButtonItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonItemActionPerformed
+        // TODO add your handling code here:
+        javax.swing.table.DefaultTableModel modelBarang = (javax.swing.table.DefaultTableModel) jTable3.getModel();
+    javax.swing.table.DefaultTableModel modelKeranjang = (javax.swing.table.DefaultTableModel) tabel.getModel();
+
+    // Dapatkan indeks baris yang dipilih di tabel Barang
+    int selectedRow = jTable3.getSelectedRow();
+
+    if (selectedRow >= 0) {
+        // Ambil data dari tabel Barang
+        String namaBarang = modelBarang.getValueAt(selectedRow, 0).toString();
+        String merek = modelBarang.getValueAt(selectedRow, 1).toString();
+        int stok = Integer.parseInt(modelBarang.getValueAt(selectedRow, 2).toString());
+        double harga = Double.parseDouble(modelBarang.getValueAt(selectedRow, 3).toString());
+
+        if (stok > 0) {
+            // Tambahkan data ke tabel Keranjang
+            int qty = 1; // Default jumlah awal
+            double subtotal = qty * harga;
+            modelKeranjang.addRow(new Object[]{modelKeranjang.getRowCount() + 1, namaBarang, merek, qty, subtotal});
+
+            // Kurangi stok di tabel Barang
+            stok -= 1;
+            modelBarang.setValueAt(stok, selectedRow, 2);
+
+            // Hapus baris jika stok habis
+            if (stok == 0) {
+                modelBarang.removeRow(selectedRow);
+            }
+        } else {
+            // Tampilkan pesan jika stok habis
+            javax.swing.JOptionPane.showMessageDialog(this, "Stok barang habis!", "Peringatan", javax.swing.JOptionPane.WARNING_MESSAGE);
+        }
+    } else {
+        // Jika tidak ada baris yang dipilih
+        javax.swing.JOptionPane.showMessageDialog(this, "Silakan pilih barang untuk ditambahkan!", "Peringatan", javax.swing.JOptionPane.WARNING_MESSAGE);
+    }
+
+    }//GEN-LAST:event_ButtonItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -343,6 +399,7 @@ public class TokoKomputer extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ButtonItem;
     private javax.swing.JLabel Nama;
     private javax.swing.JLabel Penjualan;
     private javax.swing.JButton batal;
