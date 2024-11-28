@@ -11,6 +11,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.*;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import java.sql.*;
 
 /**
  *
@@ -19,58 +25,69 @@ import javax.swing.table.DefaultTableModel;
 public class TokoKomputer extends javax.swing.JFrame {
 
     private Connection conn;
+    private TableRowSorter<TableModel> sorter;  // TableRowSorter untuk filter pencarian
 
     public TokoKomputer() {
         initComponents();
-
         connectToDatabase();
         loadBarangData();
+        searchTextField();
+        setColumnAlignmentCenter();
     }
 
     // Step 1: Database connection logic
     private void connectToDatabase() {
-    if (conn == null) {
-        try {
-            // Database URL, user, and password
-            String url = "jdbc:mysql://localhost:3306/tokokomputer";
-            String user = "root";  // Username for MySQL
-            String password = "";  // Password for MySQL (default is empty for root)
+        if (conn == null) {
+            try {
+                // Database URL, user, and password
+                String url = "jdbc:mysql://localhost:3306/toko_komputer";
+                String user = "root";  // Username for MySQL
+                String password = "root";  // Password for MySQL (default is empty for root)
 
-            // Ensure MySQL JDBC driver is loaded
-            Class.forName("com.mysql.cj.jdbc.Driver");
+                // Ensure MySQL JDBC driver is loaded
+                Class.forName("com.mysql.cj.jdbc.Driver");
 
-            // Establish the connection
-            conn = DriverManager.getConnection(url, user, password);
-            System.out.println("Database connected successfully.");
+                // Establish the connection
+                conn = DriverManager.getConnection(url, user, password);
+                System.out.println("Database connected successfully.");
 
-        } catch (SQLException e) {
-            // Specific SQLException for database-related errors
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to connect to the database. Error: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException e) {
+                // Specific SQLException for database-related errors
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Failed to connect to the database. Error: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (ClassNotFoundException e) {
-            // Error for missing JDBC driver
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "JDBC Driver not found. Please include the MySQL JDBC driver.", "Driver Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException e) {
+                // Error for missing JDBC driver
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "JDBC Driver not found. Please include the MySQL JDBC driver.", "Driver Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (Exception e) {
-            // Catch any other exceptions
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "An unexpected error occurred.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception e) {
+                // Catch any other exceptions
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "An unexpected error occurred.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
-}
+    
+    // Fungsi untuk mengatur alignment center untuk semua kolom di JTable
+    private void setColumnAlignmentCenter() {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-
+        // Menetapkan renderer untuk setiap kolom di tabel
+        for (int i = 0; i < jTable3.getColumnCount(); i++) {
+            jTable3.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+    }
     // Step 2: Load data from the database
     private void loadBarangData() {
-    // Ensure the connection is not null
+        // Ensure the connection is not null
         if (conn == null) {
             JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        String query = "SELECT nama_barang, merek, stok_tersedia, harga FROM stock";
+        String query = "SELECT id_barang,nama_barang,merek,id_kategori,stok_tersedia,harga FROM stock";
         Statement stmt = null;
         ResultSet rs = null;
 
@@ -84,9 +101,11 @@ public class TokoKomputer extends javax.swing.JFrame {
 
             // Iterate through the result set and populate the table
             while (rs.next()) {
-                model.addRow(new Object[] {
+                model.addRow(new Object[]{
+                    rs.getInt("id_barang"),
                     rs.getString("nama_barang"),
                     rs.getString("merek"),
+                    rs.getString("id_kategori"),
                     rs.getInt("stok_tersedia"),
                     rs.getDouble("harga")
                 });
@@ -97,14 +116,51 @@ public class TokoKomputer extends javax.swing.JFrame {
         } finally {
             // Close resources in the finally block to ensure they are closed even if an exception occurs
             try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    private void searchTextField() {
+        // Menambahkan TableRowSorter ke JTable
+        DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
+        sorter = new TableRowSorter<>(model);
+        jTable3.setRowSorter(sorter);
+
+        // Menambahkan listener pada JTextField untuk pencarian
+        jTextField3.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                search(jTextField3.getText());  // Pencarian saat teks ditambah
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                search(jTextField3.getText());  // Pencarian saat teks dihapus
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                search(jTextField3.getText());  // Pencarian saat teks berubah
+            }
+
+            // Fungsi pencarian untuk menyaring data di JTable
+            private void search(String str) {
+                if (str.length() == 0) {
+                    sorter.setRowFilter(null);  // Tidak ada filter jika input kosong
+                } else {
+                    sorter.setRowFilter(RowFilter.regexFilter("(?i)" + str));  // Regex pencarian (case-insensitive)
+                }
+            }
+        });
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
