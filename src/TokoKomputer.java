@@ -32,6 +32,7 @@ public class TokoKomputer extends javax.swing.JFrame {
         connectToDatabase();
         loadBarangData();
         searchTextField();
+        loadRevenue();
         setColumnAlignmentCenter();
     }
 
@@ -42,7 +43,7 @@ public class TokoKomputer extends javax.swing.JFrame {
                 // Database URL, user, and password
                 String url = "jdbc:mysql://localhost:3306/toko_komputer";
                 String user = "root";  // Username for MySQL
-                String password = "root";  // Password for MySQL (default is empty for root)
+                String password = "";  // Password for MySQL (default is empty for root)
 
                 // Ensure MySQL JDBC driver is loaded
                 Class.forName("com.mysql.cj.jdbc.Driver");
@@ -113,6 +114,50 @@ public class TokoKomputer extends javax.swing.JFrame {
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to load barang data. Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Close resources in the finally block to ensure they are closed even if an exception occurs
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private void loadRevenue() {
+        // Ensure the connection is not null
+        if (conn == null) {
+            JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String query = "SELECT id_penjualan,tanggal,total_harian FROM penjualan";
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            stmt = conn.createStatement();  // Create statement
+            rs = stmt.executeQuery(query);  // Execute the query
+
+            // Get the table model and clear any existing data
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0); // Clear existing rows
+
+            // Iterate through the result set and populate the table
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getInt("id_penjualan"),
+                    rs.getDate("tanggal"),
+                    rs.getDouble("total_harian"),
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load revenue. Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
             // Close resources in the finally block to ensure they are closed even if an exception occurs
             try {
