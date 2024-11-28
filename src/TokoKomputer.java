@@ -45,7 +45,7 @@ public class TokoKomputer extends javax.swing.JFrame {
         inputqty = new javax.swing.JTextField();
         total = new javax.swing.JLabel();
         total1 = new javax.swing.JLabel();
-        ukuran = new javax.swing.JLabel();
+        Merk = new javax.swing.JLabel();
         harga = new javax.swing.JLabel();
         tambahitem = new javax.swing.JButton();
         totalBelanja = new javax.swing.JLabel();
@@ -61,13 +61,13 @@ public class TokoKomputer extends javax.swing.JFrame {
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Nama Barang", "Merek", "Stok", "Harga"
+                "Nama Barang", "Merek", "Stok", "Harga", "Aksi"
             }
         ));
         jScrollPane3.setViewportView(jTable3);
@@ -88,8 +88,8 @@ public class TokoKomputer extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(397, Short.MAX_VALUE))
+                        .addComponent(jScrollPane3)
+                        .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
@@ -97,7 +97,7 @@ public class TokoKomputer extends javax.swing.JFrame {
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 664, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -108,8 +108,8 @@ public class TokoKomputer extends javax.swing.JFrame {
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(187, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Barang", jPanel1);
@@ -128,6 +128,11 @@ public class TokoKomputer extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tabel);
 
         bayar.setText("Bayar");
+        bayar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bayarActionPerformed(evt);
+            }
+        });
 
         batal.setText("Batal");
         batal.addActionListener(new java.awt.event.ActionListener() {
@@ -142,11 +147,23 @@ public class TokoKomputer extends javax.swing.JFrame {
         item.setFont(new java.awt.Font("sansserif", 0, 18)); // NOI18N
         item.setText("Item:");
 
+        inputitem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputitemActionPerformed(evt);
+            }
+        });
+
         Nama.setFont(new java.awt.Font("sansserif", 1, 24)); // NOI18N
         Nama.setText("Nama Barang");
 
         qty.setFont(new java.awt.Font("sansserif", 0, 18)); // NOI18N
         qty.setText("Qty:");
+
+        inputqty.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputqtyActionPerformed(evt);
+            }
+        });
 
         total.setFont(new java.awt.Font("sansserif", 0, 18)); // NOI18N
         total.setText("Total:");
@@ -154,19 +171,25 @@ public class TokoKomputer extends javax.swing.JFrame {
         total1.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
         total1.setText("Uang");
 
-        ukuran.setFont(new java.awt.Font("sansserif", 0, 18)); // NOI18N
-        ukuran.setText("Ukuran");
+        Merk.setFont(new java.awt.Font("sansserif", 0, 18)); // NOI18N
+        Merk.setText("Merk : ");
 
         harga.setFont(new java.awt.Font("sansserif", 0, 18)); // NOI18N
-        harga.setText("Harga");
+        harga.setText("Harga : ");
 
         tambahitem.setText("Tambahkan Item");
+        tambahitem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tambahitemActionPerformed(evt);
+            }
+        });
 
         totalBelanja.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
         totalBelanja.setText("Total Belanja:");
 
         total2.setFont(new java.awt.Font("sansserif", 1, 24)); // NOI18N
-        total2.setText("Total");
+        total2.setText("0"
+        );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -186,7 +209,7 @@ public class TokoKomputer extends javax.swing.JFrame {
                         .addComponent(total)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(total1))
-                    .addComponent(ukuran)
+                    .addComponent(Merk)
                     .addComponent(harga)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(qty)
@@ -195,16 +218,16 @@ public class TokoKomputer extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(totalBelanja)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(total2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(bayar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(batal, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(bayar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(batal, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(19, 19, 19))
         );
         jPanel2Layout.setVerticalGroup(
@@ -221,7 +244,7 @@ public class TokoKomputer extends javax.swing.JFrame {
                         .addGap(30, 30, 30)
                         .addComponent(Nama)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ukuran)
+                        .addComponent(Merk)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(harga)
                         .addGap(33, 33, 33)
@@ -273,7 +296,7 @@ public class TokoKomputer extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 867, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -299,13 +322,67 @@ public class TokoKomputer extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public int hitungSubTotal() {
+        return Integer.parseInt(inputqty.getText()) * Integer.parseInt(harga.getText());
+    }
+
+    public int hitungTotal() {
+        int total = 0;
+        for (int i = 0; i < tabel.getRowCount(); i++) {
+            if (tabel.getValueAt(i, 4) != null) {
+                total += Integer.parseInt(tabel.getValueAt(i, 4).toString());
+            }
+        }
+        return total;
+    }
+
     private void batalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_batalActionPerformed
         // TODO add your handling code here:
+        tabel.selectAll();
+        tabel.clearSelection();
+        baris=0;
     }//GEN-LAST:event_batalActionPerformed
 
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
+
+    private void inputitemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputitemActionPerformed
+        // TODO add your handling code here:
+        Nama.setText("sepatu");
+        Merk.setText("adibas");
+        harga.setText("1000");
+    }//GEN-LAST:event_inputitemActionPerformed
+
+    private void inputqtyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputqtyActionPerformed
+        // TODO add your handling code here:
+        total1.setText(String.valueOf(hitungSubTotal()));
+    }//GEN-LAST:event_inputqtyActionPerformed
+    int baris = 0;
+    private void tambahitemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahitemActionPerformed
+        // TODO add your handling code here:
+        tabel.setValueAt(baris + 1, baris, 0);
+        tabel.setValueAt(inputitem.getText(), baris, 1);
+        tabel.setValueAt(Nama.getText(), baris, 2);
+        tabel.setValueAt(inputqty.getText(), baris, 3);
+        tabel.setValueAt(harga.getText(), baris, 4);
+        tabel.setValueAt(total1.getText(), baris, 5);
+        Nama.setText("");
+        Merk.setText("");
+        harga.setText("");
+        inputqty.setText("");
+        total1.setText("");
+        inputitem.setText("");
+        baris++;
+    }//GEN-LAST:event_tambahitemActionPerformed
+
+    private void bayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bayarActionPerformed
+        // TODO add your handling code here:
+        
+        tabel.selectAll();
+        tabel.clearSelection();
+        baris=0;
+    }//GEN-LAST:event_bayarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -343,6 +420,7 @@ public class TokoKomputer extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Merk;
     private javax.swing.JLabel Nama;
     private javax.swing.JLabel Penjualan;
     private javax.swing.JButton batal;
@@ -370,6 +448,5 @@ public class TokoKomputer extends javax.swing.JFrame {
     private javax.swing.JLabel total1;
     private javax.swing.JLabel total2;
     private javax.swing.JLabel totalBelanja;
-    private javax.swing.JLabel ukuran;
     // End of variables declaration//GEN-END:variables
 }
