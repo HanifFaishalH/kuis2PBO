@@ -2,20 +2,66 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author HANIF FAISHAL HILMI
  */
 public class TokoKomputer extends javax.swing.JFrame {
-    /**
-     * Creates new form TokoKomputer
-     */
+
+    private Connection conn;
+
     public TokoKomputer() {
         initComponents();
+        
+        connectToDatabase();
+        loadBarangData();
     }
+
+    // Step 1: Database connection logic
+    private void connectToDatabase() {
+        try {
+            String url = "jdbc:mysql://localhost:3306/tokokomputer";
+            String user = "root";
+            String password = "";
+            conn = DriverManager.getConnection(url, user, password);
+            System.out.println("Database connected successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to connect to the database.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Step 2: Load data from the database
+    private void loadBarangData() {
+        try {
+            String query = "SELECT nama_barang, merek, stok, harga FROM barang";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
+            model.setRowCount(0); // Clear existing data
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getString("nama_barang"),
+                    rs.getString("merek"),
+                    rs.getInt("stok"),
+                    rs.getDouble("harga")
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load barang data.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     
-  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -326,40 +372,40 @@ public class TokoKomputer extends javax.swing.JFrame {
     private void ButtonItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonItemActionPerformed
         // TODO add your handling code here:
         javax.swing.table.DefaultTableModel modelBarang = (javax.swing.table.DefaultTableModel) jTable3.getModel();
-    javax.swing.table.DefaultTableModel modelKeranjang = (javax.swing.table.DefaultTableModel) tabel.getModel();
+        javax.swing.table.DefaultTableModel modelKeranjang = (javax.swing.table.DefaultTableModel) tabel.getModel();
 
-    // Dapatkan indeks baris yang dipilih di tabel Barang
-    int selectedRow = jTable3.getSelectedRow();
+        // Dapatkan indeks baris yang dipilih di tabel Barang
+        int selectedRow = jTable3.getSelectedRow();
 
-    if (selectedRow >= 0) {
-        // Ambil data dari tabel Barang
-        String namaBarang = modelBarang.getValueAt(selectedRow, 0).toString();
-        String merek = modelBarang.getValueAt(selectedRow, 1).toString();
-        int stok = Integer.parseInt(modelBarang.getValueAt(selectedRow, 2).toString());
-        double harga = Double.parseDouble(modelBarang.getValueAt(selectedRow, 3).toString());
+        if (selectedRow >= 0) {
+            // Ambil data dari tabel Barang
+            String namaBarang = modelBarang.getValueAt(selectedRow, 0).toString();
+            String merek = modelBarang.getValueAt(selectedRow, 1).toString();
+            int stok = Integer.parseInt(modelBarang.getValueAt(selectedRow, 2).toString());
+            double harga = Double.parseDouble(modelBarang.getValueAt(selectedRow, 3).toString());
 
-        if (stok > 0) {
-            // Tambahkan data ke tabel Keranjang
-            int qty = 1; // Default jumlah awal
-            double subtotal = qty * harga;
-            modelKeranjang.addRow(new Object[]{modelKeranjang.getRowCount() + 1, namaBarang, merek, qty, subtotal});
+            if (stok > 0) {
+                // Tambahkan data ke tabel Keranjang
+                int qty = 1; // Default jumlah awal
+                double subtotal = qty * harga;
+                modelKeranjang.addRow(new Object[]{modelKeranjang.getRowCount() + 1, namaBarang, merek, qty, subtotal});
 
-            // Kurangi stok di tabel Barang
-            stok -= 1;
-            modelBarang.setValueAt(stok, selectedRow, 2);
+                // Kurangi stok di tabel Barang
+                stok -= 1;
+                modelBarang.setValueAt(stok, selectedRow, 2);
 
-            // Hapus baris jika stok habis
-            if (stok == 0) {
-                modelBarang.removeRow(selectedRow);
+                // Hapus baris jika stok habis
+                if (stok == 0) {
+                    modelBarang.removeRow(selectedRow);
+                }
+            } else {
+                // Tampilkan pesan jika stok habis
+                javax.swing.JOptionPane.showMessageDialog(this, "Stok barang habis!", "Peringatan", javax.swing.JOptionPane.WARNING_MESSAGE);
             }
         } else {
-            // Tampilkan pesan jika stok habis
-            javax.swing.JOptionPane.showMessageDialog(this, "Stok barang habis!", "Peringatan", javax.swing.JOptionPane.WARNING_MESSAGE);
+            // Jika tidak ada baris yang dipilih
+            javax.swing.JOptionPane.showMessageDialog(this, "Silakan pilih barang untuk ditambahkan!", "Peringatan", javax.swing.JOptionPane.WARNING_MESSAGE);
         }
-    } else {
-        // Jika tidak ada baris yang dipilih
-        javax.swing.JOptionPane.showMessageDialog(this, "Silakan pilih barang untuk ditambahkan!", "Peringatan", javax.swing.JOptionPane.WARNING_MESSAGE);
-    }
 
     }//GEN-LAST:event_ButtonItemActionPerformed
 
@@ -367,36 +413,10 @@ public class TokoKomputer extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TokoKomputer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TokoKomputer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TokoKomputer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TokoKomputer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TokoKomputer().setVisible(true);
-            }
-        });
+        java.awt.EventQueue.invokeLater(() -> new TokoKomputer().setVisible(true));
     }
+
+    // Variables declaration
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ButtonItem;
