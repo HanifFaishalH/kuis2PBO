@@ -25,7 +25,7 @@ import java.sql.*;
 public class TokoKomputer extends javax.swing.JFrame {
 
     private Connection conn;
-    private TableRowSorter<TableModel> sorter;  // TableRowSorter untuk filter pencarian
+    private TableRowSorter<TableModel> sorter; // TableRowSorter untuk filter pencarian
 
     public TokoKomputer() {
         initComponents();
@@ -42,8 +42,8 @@ public class TokoKomputer extends javax.swing.JFrame {
             try {
                 // Database URL, user, and password
                 String url = "jdbc:mysql://localhost:3306/toko_komputer";
-                String user = "root";  // Username for MySQL
-                String password = "";  // Password for MySQL (default is empty for root)
+                String user = "root"; // Username for MySQL
+                String password = ""; // Password for MySQL (default is empty for root)
 
                 // Ensure MySQL JDBC driver is loaded
                 Class.forName("com.mysql.cj.jdbc.Driver");
@@ -55,21 +55,24 @@ public class TokoKomputer extends javax.swing.JFrame {
             } catch (SQLException e) {
                 // Specific SQLException for database-related errors
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Failed to connect to the database. Error: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Failed to connect to the database. Error: " + e.getMessage(),
+                        "Database Error", JOptionPane.ERROR_MESSAGE);
 
             } catch (ClassNotFoundException e) {
                 // Error for missing JDBC driver
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "JDBC Driver not found. Please include the MySQL JDBC driver.", "Driver Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "JDBC Driver not found. Please include the MySQL JDBC driver.",
+                        "Driver Error", JOptionPane.ERROR_MESSAGE);
 
             } catch (Exception e) {
                 // Catch any other exceptions
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "An unexpected error occurred.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "An unexpected error occurred.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
-    
+
     // Fungsi untuk mengatur alignment center untuk semua kolom di JTable
     private void setColumnAlignmentCenter() {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -80,11 +83,13 @@ public class TokoKomputer extends javax.swing.JFrame {
             jTable3.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
     }
+
     // Step 2: Load data from the database
     private void loadBarangData() {
         // Ensure the connection is not null
         if (conn == null) {
-            JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -93,8 +98,8 @@ public class TokoKomputer extends javax.swing.JFrame {
         ResultSet rs = null;
 
         try {
-            stmt = conn.createStatement();  // Create statement
-            rs = stmt.executeQuery(query);  // Execute the query
+            stmt = conn.createStatement(); // Create statement
+            rs = stmt.executeQuery(query); // Execute the query
 
             // Get the table model and clear any existing data
             DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
@@ -102,20 +107,22 @@ public class TokoKomputer extends javax.swing.JFrame {
 
             // Iterate through the result set and populate the table
             while (rs.next()) {
-                model.addRow(new Object[]{
-                    rs.getInt("id_barang"),
-                    rs.getString("nama_barang"),
-                    rs.getString("merek"),
-                    rs.getString("id_kategori"),
-                    rs.getInt("stok_tersedia"),
-                    rs.getDouble("harga")
+                model.addRow(new Object[] {
+                        rs.getInt("id_barang"),
+                        rs.getString("nama_barang"),
+                        rs.getString("merek"),
+                        rs.getString("id_kategori"),
+                        rs.getInt("stok_tersedia"),
+                        rs.getDouble("harga")
                 });
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to load barang data. Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to load barang data. Error: " + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         } finally {
-            // Close resources in the finally block to ensure they are closed even if an exception occurs
+            // Close resources in the finally block to ensure they are closed even if an
+            // exception occurs
             try {
                 if (rs != null) {
                     rs.close();
@@ -128,10 +135,12 @@ public class TokoKomputer extends javax.swing.JFrame {
             }
         }
     }
+
     private void loadRevenue() {
         // Ensure the connection is not null
         if (conn == null) {
-            JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -140,8 +149,8 @@ public class TokoKomputer extends javax.swing.JFrame {
         ResultSet rs = null;
 
         try {
-            stmt = conn.createStatement();  // Create statement
-            rs = stmt.executeQuery(query);  // Execute the query
+            stmt = conn.createStatement(); // Create statement
+            rs = stmt.executeQuery(query); // Execute the query
 
             // Get the table model and clear any existing data
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
@@ -149,17 +158,71 @@ public class TokoKomputer extends javax.swing.JFrame {
 
             // Iterate through the result set and populate the table
             while (rs.next()) {
-                model.addRow(new Object[]{
-                    rs.getInt("id_penjualan"),
-                    rs.getDate("tanggal"),
-                    rs.getDouble("total_harian"),
+                model.addRow(new Object[] {
+                        rs.getInt("id_penjualan"),
+                        rs.getDate("tanggal"),
+                        rs.getDouble("total_harian"),
                 });
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to load revenue. Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to load revenue. Error: " + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         } finally {
-            // Close resources in the finally block to ensure they are closed even if an exception occurs
+            // Close resources in the finally block to ensure they are closed even if an
+            // exception occurs
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void loadPenjualanDetail() {
+        // Ensure the connection is not null
+        if (conn == null) {
+            JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String query = "SELECT id_detail, id_barang, qty, subtotal FROM penjualan_detail";
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            stmt = conn.createStatement(); // Create statement
+            rs = stmt.executeQuery(query); // Execute the query
+
+            // Get the table model and clear any existing data
+            DefaultTableModel model = (DefaultTableModel) tabel.getModel();
+            model.setRowCount(0); // Clear existing rows
+
+            // Iterate through the result set and populate the table
+            while (rs.next()) {
+                String getNamaBarang = "SELECT nama_barang from stock where id_barang = id_barang";
+                ResultSet rsgetNamaBarang = stmt.executeQuery(getNamaBarang);
+                model.addRow(new Object[] {
+                        rs.getInt("id_detail"),
+                        rs.getInt("id_barang"),
+                        rsgetNamaBarang.getString("nama_barang"),
+                        rs.getInt("qty"),
+                        rs.getInt("subtotal"),
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load revenue. Error: " + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Close resources in the finally block to ensure they are closed even if an
+            // exception occurs
             try {
                 if (rs != null) {
                     rs.close();
@@ -183,40 +246,31 @@ public class TokoKomputer extends javax.swing.JFrame {
         jTextField3.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                search(jTextField3.getText());  // Pencarian saat teks ditambah
+                search(jTextField3.getText()); // Pencarian saat teks ditambah
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                search(jTextField3.getText());  // Pencarian saat teks dihapus
+                search(jTextField3.getText()); // Pencarian saat teks dihapus
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                search(jTextField3.getText());  // Pencarian saat teks berubah
+                search(jTextField3.getText()); // Pencarian saat teks berubah
             }
 
             // Fungsi pencarian untuk menyaring data di JTable
             private void search(String str) {
                 if (str.length() == 0) {
-                    sorter.setRowFilter(null);  // Tidak ada filter jika input kosong
+                    sorter.setRowFilter(null); // Tidak ada filter jika input kosong
                 } else {
-                    sorter.setRowFilter(RowFilter.regexFilter("(?i)" + str));  // Regex pencarian (case-insensitive)
+                    sorter.setRowFilter(RowFilter.regexFilter("(?i)" + str)); // Regex pencarian (case-insensitive)
                 }
             }
         });
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
@@ -313,15 +367,20 @@ public class TokoKomputer extends javax.swing.JFrame {
 
         tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "No", "Item ID", "Item", "QTY", "SubTotal"
+                "No", "Item_id", "Item", "Qty", "Subtotal"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(tabel);
 
         bayar.setText("Bayar");
@@ -413,28 +472,29 @@ public class TokoKomputer extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(inputqty, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(28, 28, 28)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(bayar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(batal, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(totalBelanja)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(total2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(bayar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(batal, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(19, 19, 19))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(Penjualan)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(17, 17, 17)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(item)
                             .addComponent(inputitem, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -483,30 +543,18 @@ public class TokoKomputer extends javax.swing.JFrame {
                 java.lang.Integer.class, java.lang.String.class, java.lang.Double.class
             };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
+    public Class getColumnClass(int columnIndex) {
+        return types[columnIndex];
+    }});jScrollPane1.setViewportView(jTable1);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 867, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+    javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(
+            jPanel3);jPanel3.setLayout(jPanel3Layout);jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jScrollPane1,javax.swing.GroupLayout.DEFAULT_SIZE,867,Short.MAX_VALUE));jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel3Layout.createSequentialGroup().addContainerGap().addComponent(jScrollPane1,javax.swing.GroupLayout.DEFAULT_SIZE,493,Short.MAX_VALUE).addContainerGap()));
 
-        jTabbedPane1.addTab("Revenue", jPanel3);
+    jTabbedPane1.addTab("Revenue",jPanel3);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+
+    getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jTabbedPane1)
@@ -520,24 +568,51 @@ public class TokoKomputer extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public int hitungSubTotal() {
-        return Integer.parseInt(inputqty.getText()) * Integer.parseInt(harga.getText());
+        return (Integer.parseInt(inputqty.getText()) * Integer.parseInt(harga.getText()));
     }
 
     public int hitungTotal() {
         int total = 0;
         for (int i = 0; i < tabel.getRowCount(); i++) {
-            if (tabel.getValueAt(i, 5) != null) {
-                total += Integer.parseInt(tabel.getValueAt(i, 5).toString());
-            }
+            total += Integer.parseInt(tabel.getValueAt(i, 5).toString());
         }
         return total;
     }
 
     private void batalActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_batalActionPerformed
         // TODO add your handling code here:
-        tabel.selectAll();
-        tabel.clearSelection();
-        baris = 0;
+        if (conn == null) {
+            JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String query = "DELETE * FROM penjualan_detail";
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            stmt = conn.createStatement(); // Create statement
+            rs = stmt.executeQuery(query); // Execute the query
+            baris = 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load revenue. Error: " + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Close resources in the finally block to ensure they are closed even if an
+            // exception occurs
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }// GEN-LAST:event_batalActionPerformed
 
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField3ActionPerformed
@@ -546,9 +621,43 @@ public class TokoKomputer extends javax.swing.JFrame {
 
     private void inputitemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_inputitemActionPerformed
         // TODO add your handling code here:
-        Nama.setText("RTX 4090");
-        Merk.setText("GIGABYTE");
-        harga.setText("25000000");
+        if (conn == null) {
+            JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String query = "SELECT id_barang,nama_barang,merek,id_kategori,stok_tersedia,harga FROM stock WHERE id_barang = '"
+                + inputitem.getText() + "'";
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            stmt = conn.createStatement(); // Create statement
+            rs = stmt.executeQuery(query); // Execute the query
+
+            Nama.setText(rs.getString("nama_barang"));
+            Merk.setText(rs.getString("merek"));
+            harga.setText(rs.getString("harga"));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load revenue. Error: " + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Close resources in the finally block to ensure they are closed even if an
+            // exception occurs
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }// GEN-LAST:event_inputitemActionPerformed
 
     private void inputqtyActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_inputqtyActionPerformed
@@ -560,27 +669,56 @@ public class TokoKomputer extends javax.swing.JFrame {
 
     private void tambahitemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_tambahitemActionPerformed
         // TODO add your handling code here:
-        tabel.setValueAt(baris + 1, baris, 0);
-        tabel.setValueAt(inputitem.getText(), baris, 1);
-        tabel.setValueAt(Nama.getText(), baris, 2);
-        tabel.setValueAt(inputqty.getText(), baris, 3);
-        tabel.setValueAt(harga.getText(), baris, 4);
-        tabel.setValueAt(String.valueOf(hitungSubTotal()), baris, 5);
+        if (conn == null) {
+            JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String query = "INSERT INTO penjualan_detail (id_detail, id_barang, qty, subtotal) VALUES ("+ (baris+1)+", '"
+                + inputitem.getText() + "', '" + inputqty.getText() + "', '" + total1.getText() + "')";
         Nama.setText("");
         Merk.setText("");
         harga.setText("");
         inputqty.setText("");
         total1.setText("");
         inputitem.setText("");
-        baris++;
     }// GEN-LAST:event_tambahitemActionPerformed
 
     private void bayarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bayarActionPerformed
         // TODO add your handling code here:
+        if (conn == null) {
+            JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        tabel.selectAll();
-        tabel.clearSelection();
-        baris = 0;
+        String query = "DELETE * FROM penjualan_detail";
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            stmt = conn.createStatement(); // Create statement
+            rs = stmt.executeQuery(query); // Execute the query
+            baris = 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load revenue. Error: " + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Close resources in the finally block to ensure they are closed even if an
+            // exception occurs
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }// GEN-LAST:event_bayarActionPerformed
 
     /**
