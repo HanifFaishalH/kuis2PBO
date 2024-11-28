@@ -2,6 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -9,12 +16,52 @@
  */
 public class TokoKomputer extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TokoKomputer
-     */
+    private Connection conn;
+
     public TokoKomputer() {
         initComponents();
+        
+        connectToDatabase();
+        loadBarangData();
     }
+
+    // Step 1: Database connection logic
+    private void connectToDatabase() {
+        try {
+            String url = "jdbc:mysql://localhost:3306/tokokomputer";
+            String user = "root";
+            String password = "";
+            conn = DriverManager.getConnection(url, user, password);
+            System.out.println("Database connected successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to connect to the database.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Step 2: Load data from the database
+    private void loadBarangData() {
+        try {
+            String query = "SELECT nama_barang, merek, stok, harga FROM barang";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
+            model.setRowCount(0); // Clear existing data
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getString("nama_barang"),
+                    rs.getString("merek"),
+                    rs.getInt("stok"),
+                    rs.getDouble("harga")
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load barang data.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -61,13 +108,30 @@ public class TokoKomputer extends javax.swing.JFrame {
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+<<<<<<< HEAD
                 {null, null, null, null, null},
                 {null, null, null, null, null},
                 {null, null, null, null, null},
                 {null, null, null, null, null}
+=======
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+>>>>>>> origin/master
             },
             new String [] {
+<<<<<<< HEAD
                 "Nama Barang", "Merek", "Stok", "Harga", "Aksi"
+=======
+                "id_barang", "Nama Barang", "id_kategori", "Merek", "Stok", "Harga"
+>>>>>>> origin/master
             }
         ));
         jScrollPane3.setViewportView(jTable3);
@@ -88,7 +152,11 @@ public class TokoKomputer extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+<<<<<<< HEAD
                         .addComponent(jScrollPane3)
+=======
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
+>>>>>>> origin/master
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -108,8 +176,13 @@ public class TokoKomputer extends javax.swing.JFrame {
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
                 .addGap(18, 18, 18)
+<<<<<<< HEAD
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
                 .addContainerGap())
+=======
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(18, Short.MAX_VALUE))
+>>>>>>> origin/master
         );
 
         jTabbedPane1.addTab("Barang", jPanel1);
@@ -329,8 +402,8 @@ public class TokoKomputer extends javax.swing.JFrame {
     public int hitungTotal() {
         int total = 0;
         for (int i = 0; i < tabel.getRowCount(); i++) {
-            if (tabel.getValueAt(i, 4) != null) {
-                total += Integer.parseInt(tabel.getValueAt(i, 4).toString());
+            if (tabel.getValueAt(i, 5) != null) {
+                total += Integer.parseInt(tabel.getValueAt(i, 5).toString());
             }
         }
         return total;
@@ -388,36 +461,10 @@ public class TokoKomputer extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TokoKomputer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TokoKomputer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TokoKomputer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TokoKomputer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        java.awt.EventQueue.invokeLater(() -> new TokoKomputer().setVisible(true));
         }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TokoKomputer().setVisible(true);
-            }
-        });
-    }
+    // Variables declaration
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Merk;
