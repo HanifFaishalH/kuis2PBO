@@ -145,7 +145,7 @@ public class TokoKomputer extends javax.swing.JFrame {
             return;
         }
 
-        String query = "SELECT id_penjualan,tanggal,total_harian FROM penjualan";
+        String query = "SELECT id_penjualan,tanggal,total_harian FROM penjualan ORDER BY tanggal DESC";
         Statement stmt = null;
         ResultSet rs = null;
 
@@ -617,6 +617,7 @@ public class TokoKomputer extends javax.swing.JFrame {
             stmt.executeUpdate(resetAutoIncrementQuery); // Reset AUTO_INCREMENT
 
             tabelReload();
+            total2.setText("0");
 
             if (affectedRows > 0) {
                 baris = 1; // Reset baris if deletion is successful
@@ -756,51 +757,61 @@ public class TokoKomputer extends javax.swing.JFrame {
         loadPenjualanDetail();
     }
 
-private void bayarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bayarActionPerformed
-    // TODO add your handling code here:
-    String tanggal = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date().getTime());
-    if (conn == null) {
-        JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error",
-                JOptionPane.ERROR_MESSAGE);
-        return;
+    private void table1Reload() {
+        loadRevenue();
     }
-    Statement stmt = null;
-    try {
-        // Update the total_harian in the penjualan table
-        String query = "UPDATE penjualan SET total_harian = total_harian + " + total2.getText() + " WHERE tanggal = '" + tanggal + "'";
-        stmt = conn.createStatement();
-        stmt.executeUpdate(query);
-        
-        // Delete all rows from penjualan_detail table
-        query = "DELETE FROM penjualan_detail";
-        stmt.executeUpdate(query);
 
-        tabelReload(); // Call function to reload table
-        baris = 1;
-        count++;
-        
-        JOptionPane.showMessageDialog(this, "Payment processed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-    } catch (SQLException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Failed to process payment. Error: " + e.getMessage(), "Error",
-                JOptionPane.ERROR_MESSAGE);
-    } finally {
-        // Close resources in the finally block to ensure they are closed even if an exception occurs
+    private void bayarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bayarActionPerformed
+        // TODO add your handling code here:
+        String tanggal = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date().getTime());
+        if (conn == null) {
+            JOptionPane.showMessageDialog(this, "Database connection is not established.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Statement stmt = null;
         try {
-            if (stmt != null) {
-                stmt.close();
-            }
+            // Update the total_harian in the penjualan table
+            String query = "UPDATE penjualan SET total_harian = total_harian + " + total2.getText() + " WHERE tanggal = '" + tanggal + "'";
+            stmt = conn.createStatement();
+            stmt.executeUpdate(query);
+
+            // Delete all rows from penjualan_detail table
+            query = "DELETE FROM penjualan_detail";
+            stmt.executeUpdate(query);
+
+            // Reset AUTO_INCREMENT after deleting rows
+            String resetAutoIncrementQuery = "ALTER TABLE penjualan_detail AUTO_INCREMENT = 1";
+            stmt.executeUpdate(resetAutoIncrementQuery);
+
+            tabelReload(); // Call function to reload table
+            table1Reload();
+            baris = 1;
+            count++;
+            total2.setText("0");
+
+            JOptionPane.showMessageDialog(this, "Payment processed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to process payment. Error: " + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Close resources in the finally block to ensure they are closed even if an exception occurs
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
-}
 // GEN-LAST:event_bayarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
+/**
+ * @param args the command line arguments
+ */
+public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> new TokoKomputer().setVisible(true));
     }
 
